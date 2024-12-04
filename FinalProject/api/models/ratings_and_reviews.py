@@ -8,7 +8,7 @@ class RatingAndReview(Base):
     __tablename__ = "ratings_and_reviews"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    review_text = Column(String, nullable=True)
+    review_text = Column(String(500), nullable=True)
     score = Column(Integer, nullable=False)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
