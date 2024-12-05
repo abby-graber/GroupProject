@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from sqlalchemy import date
 class PaymentBase(BaseModel):
     card_info: str
     transaction_status: str
