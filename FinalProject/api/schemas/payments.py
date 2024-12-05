@@ -5,6 +5,7 @@ class PaymentBase(BaseModel):
     transaction_status: str
     payment_type: str
     customer_id: int
+    amount: float
 
 class PaymentCreate(PaymentBase):
     pass
