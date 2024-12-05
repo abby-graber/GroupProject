@@ -11,5 +11,5 @@ class Payment(Base):
     payment_type = Column(String(50), nullable=False)  #credit or debit
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
     amount = Column(Float, nullable=False)
-    date = Column(Date, nullable=False)
+    date = Column(Date)
     customer = relationship("Customer", back_populates="payments")

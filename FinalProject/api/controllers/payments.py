@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ..models import payments as model
 from sqlalchemy import func
 from datetime import date
-from pydantic import BaseModel
+
 
 
 
@@ -24,11 +24,7 @@ def create_payment(db: Session, request):
 
 
 def get_daily_revenue(db: Session, specific_date: date = date.today()):
-
-
-    revenue = db.query(func.sum(model.Payment.amount)) \
-                .filter(model.Payment.date == specific_date) \
-                .scalar()
+    revenue = db.query(func.sum(model.Payment.amount))
     if revenue is None:
         revenue = 0.0
 
