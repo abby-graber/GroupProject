@@ -7,11 +7,11 @@ from datetime import datetime, timedelta
 
 def place_order(db: Session, request_data: dict):
     total_orders = db.query(func.count(model.Order.id)).scalar() + 1
-    next_tracking_number = (total_orders % 99) or 99
+    next_tracking_number = (total_orders % 99999) or 99999
 
     new_item = model.Order(
         customer_name=request_data["customer_name"],
-        tracking_number=f"{next_tracking_number:02}",
+        tracking_number=f"{next_tracking_number:05}",
         order_status="Received",
         total_price=0.00,
         description=request_data.get("description")
@@ -48,6 +48,17 @@ def read_one(db: Session, item_id):
     return item
 
 
+def read_one_tracked(db: Session, tracking_number: str):
+    try:
+        tracking_item = db.query(model.Order).filter(model.Order.tracking_number == tracking_number).first()
+        if not tracking_item:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tracking number not found!")
+    except SQLAlchemyError as e:
+        error = str(e.__dict['orig'])
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+    return tracking_item
+
+
 def update(db: Session, item_id, request):
     try:
         item = db.query(model.Order).filter(model.Order.id == item_id)
@@ -79,7 +90,10 @@ def update_status(db: Session, item_id: int, order_status: str):
         item = db.query(model.Order).filter(model.Order.id == item_id)
         if not item.first():
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Id not found!")
-        item.update({"order_status": order_status}, synchronize_session=False)
+        if order_status == "Done":
+            item.update({"order_status": order_status, "tracking_number": None}, synchronize_session=False)
+        else:
+            item.update({"order_status": order_status}, synchronize_session=False)
         db.commit()
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
