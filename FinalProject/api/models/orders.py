@@ -12,7 +12,7 @@ class Order(Base):
     order_date = Column(DATETIME, nullable=False, server_default=str(datetime.now()))
     tracking_number = Column(String(100))
     order_status = Column(String(100))
-    total_price = Column(DECIMAL)
+    total_price = Column(DECIMAL(10, 2))
+    description = Column(String(100))
 
-    customer = relationship("Customer", back_populates="orders")
     order_details = relationship("OrderDetail", back_populates="order")
