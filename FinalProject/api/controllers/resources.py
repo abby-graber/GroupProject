@@ -22,6 +22,9 @@ def check_resources(sandwich_id: int, order_size: int, order_id: int, db: Sessio
             raise HTTPException(
                 status_code=400, detail=f"Insufficient {resource.item} for Order #{order_id}. Order removed.")
 
+        resource.amount -= required_amount
+        db.add(resource)
+    db.commit()
     return True
 
 # Removes order if there are insufficient resources
