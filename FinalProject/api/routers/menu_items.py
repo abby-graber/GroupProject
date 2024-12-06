@@ -14,14 +14,14 @@ router = APIRouter(
 # Add Menu Items
 # @app.post
 
-@router.post("/items/", response_model=menu.MenuItem, tags=["Menu Items"])
+@router.post("/", response_model=menu.MenuItem, tags=["Menu Items"])
 def add_item(item: menu.MenuItemCreate, db: Session = Depends(get_db)):
     return menu_items.create(db=db, item=item)
 
 # Update Existing Menu Items
 # @app.put
 
-@router.put("/items/{item_id}", response_model=menu.MenuItem, tags=["Menu Items"])
+@router.put("/{item_id}", response_model=menu.MenuItem, tags=["Menu Items"])
 def update_one_item(item_id: int, item: menu.MenuItemUpdate, db: Session = Depends(get_db)):
     menu_db = menu_items.read_one(db, item_id=item_id)
     if menu_db is None:
@@ -31,7 +31,7 @@ def update_one_item(item_id: int, item: menu.MenuItemUpdate, db: Session = Depen
 # Delete Menu Items
 # @app.delete
 
-@router.delete("/items/{item_id}", tags=["Menu Items"])
+@router.delete("/{item_id}", tags=["Menu Items"])
 def delete_one_item(item_id: int, db: Session = Depends(get_db)):
     item = menu_items.read_one(db, item_id=item_id)
     if item is None:
@@ -41,6 +41,6 @@ def delete_one_item(item_id: int, db: Session = Depends(get_db)):
 # Display Current Menu
 # @app.get
 
-@router.get("/items/", response_model=List[menu.MenuItem], tags=["Menu Items"])
+@router.get("/", response_model=List[menu.MenuItem], tags=["Menu Items"])
 def read_items(db: Session = Depends(get_db)):
     return menu_items.read_all(db)
