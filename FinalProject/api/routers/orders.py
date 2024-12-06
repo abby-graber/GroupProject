@@ -4,6 +4,7 @@ from ..controllers import orders as controller
 from ..schemas import orders as schema
 from ..dependencies.database import engine, get_db
 from datetime import datetime
+from typing import List
 
 router = APIRouter(
     tags=['Orders'],
@@ -24,12 +25,12 @@ def place_order(
     return controller.place_order(db=db, request_data=request_data)
 
 
-@router.get("/", response_model=list[schema.Order])
+@router.get("/", response_model=List[schema.Order])
 def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
 
 
-@router.get("/date-range", response_model=list[schema.Order])
+@router.get("/date-range", response_model=List[schema.Order])
 def date_range(db: Session = Depends(get_db), start_date: datetime = Query(description="(YYYY-MM-DD)"), end_date: datetime = Query(description="(YYYY-MM-DD)")):
     return controller.date_range(db=db, start_date=start_date, end_date=end_date)
 

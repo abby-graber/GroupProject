@@ -45,7 +45,7 @@ def delete_one_item(item_id: int, db: Session = Depends(get_db)):
 def read_items(db: Session = Depends(get_db)):
     return menu_items.read_all(db)
 
-@router.get("/", response_model=List[menu.MenuItem], tags=["Menu Items"])
+@router.get("/{item_id}", response_model=List[menu.MenuItem], tags=["Menu Items"])
 def read_one_item(item_id: int, db: Session = Depends(get_db)):
     item = menu_items.read_one(db, item_id=item_id)
     if item is None:

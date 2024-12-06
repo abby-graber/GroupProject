@@ -5,8 +5,6 @@ from sqlalchemy import func
 from datetime import date
 
 
-
-
 def create_payment(db: Session, request):
     new_payment = model.Payment(
         id = request.id,
