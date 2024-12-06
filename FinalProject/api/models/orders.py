@@ -16,3 +16,4 @@ class Order(Base):
     description = Column(String(100))
 
     order_details = relationship("OrderDetail", back_populates="order")
+    ratings_and_reviews = relationship("RatingAndReview", back_populates="order")

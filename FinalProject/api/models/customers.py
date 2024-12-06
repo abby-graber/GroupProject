@@ -13,6 +13,5 @@ class Customer(Base):
     phone_number = Column(String(20), nullable=False)
     address = Column(String(500), nullable=False)
 
-
     ratings_and_reviews = relationship("RatingAndReview", back_populates="customer")
     payments = relationship("Payment", back_populates="customer")

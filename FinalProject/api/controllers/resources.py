@@ -71,3 +71,5 @@ def create(db: Session, ingredient):
     db.commit()
     db.refresh(db_resource)
     return db_resource
+
+
