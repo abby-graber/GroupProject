@@ -33,3 +33,4 @@ def delete(db: Session, item_id: int):
     db_menu.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
