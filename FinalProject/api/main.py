@@ -3,6 +3,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import index as index_route
 from .routers import ratings_and_reviews as reviews_router  # Added import for the reviews router
+from .routers import promotions as promotions_router  # Added import for the promotions router
 from .models import model_loader
 from .dependencies.config import conf
 
@@ -24,6 +25,9 @@ index_route.load_routes(app)
 
 # Include the ratings and reviews router
 app.include_router(reviews_router.router)
+
+# Include the promotions router
+app.include_router(promotions_router.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host=conf.app_host, port=conf.app_port)
