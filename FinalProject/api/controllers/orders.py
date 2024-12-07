@@ -2,6 +2,8 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Response, Depends, Query
 from ..models import orders as model
+from ..models import order_details as detail_model
+from ..controllers import resources
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timedelta
 
@@ -21,6 +23,19 @@ def place_order(db: Session, request_data: dict):
         db.add(new_item)
         db.commit()
         db.refresh(new_item)
+
+        order_details = db.query(detail_model.OrderDetail).filter_by(order_id=new_item.id).all()
+
+        for detail in order_details:
+            sandwich_id = detail.sandwich_id
+            order_size = detail.quantity
+
+            resources.check_resources(
+                sandwich_id=sandwich_id,
+                order_size=order_size,
+                order_id=new_item.id,
+                db=db,)
+
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
@@ -54,9 +69,20 @@ def read_one_tracked(db: Session, tracking_number: str):
         if not tracking_item:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tracking number not found!")
     except SQLAlchemyError as e:
-        error = str(e.__dict['orig'])
+        error = str(e.__dict__['orig'])
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     return tracking_item
+
+def read_one_order(db: Session, order_id: int):
+    try:
+        order_id = db.query(model.Order).filter(model.Order.id == order_id).first()
+        if not order_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tracking number not found!")
+    except SQLAlchemyError as e:
+        error = str(e.__dict__['orig'])
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
+    return order_id
+
 
 
 def update(db: Session, item_id: int, request):

@@ -4,6 +4,7 @@ from typing import List
 
 from ..controllers import resources
 from ..schemas import resources as resource
+from ..schemas import recipes as recipe_schemas
 from ..models import resources as resource_model
 from ..dependencies.database import engine, get_db
 

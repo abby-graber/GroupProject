@@ -5,11 +5,6 @@ from ..models import recipes as recipe_model
 from ..models import orders as order_model
 from ..models import resources as resource_model
 
-# Needs to be called by a router to delete an order that was placed if resources are insufficient
-# Needs relationship with resource table in order to get order id
-# Update order_placement router with check_resources
-# db: Session = Depends(get_db) subject to change depending on the order_placement router
-
 def check_resources(sandwich_id: int, order_size: int, order_id: int, db: Session = Depends(get_db)) -> bool:
     recipes = db.query(recipe_model.Recipe).filter(recipe_model.Recipe.sandwich_id == sandwich_id).all()
 

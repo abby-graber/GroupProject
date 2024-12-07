@@ -36,7 +36,7 @@ def date_range(db: Session = Depends(get_db), start_date: datetime = Query(descr
 
 
 @router.get("/tracking", response_model=schema.Order)
-def read_one(tracking_number: int, db: Session = Depends(get_db)):
+def read_one(tracking_number: str, db: Session = Depends(get_db)):
     return controller.read_one_tracked(db, tracking_number=tracking_number)
 
 
@@ -68,6 +68,10 @@ def update_status(
 @router.delete("/{item_id}")
 def delete(item_id: int, db: Session = Depends(get_db)):
     return controller.delete(db=db, item_id=item_id)
+
+@router.get("/{order_id}", response_model=schema.Order)
+def read_one(order_id: int, db: Session = Depends(get_db)):
+    return controller.read_one_order(db, order_id=order_id)
 
 @router.get("/{order_id}/summary", response_model=schema.Order)
 def get_order_summary(order_id: int, db: Session = Depends(get_db)):
