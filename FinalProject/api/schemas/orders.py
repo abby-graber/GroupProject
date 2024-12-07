@@ -11,6 +11,7 @@ class OrderBase(BaseModel):
     order_status: Optional[str] = None
     total_price: Optional[float] = None
     description: Optional[str] = None
+    delivery_type: str
 
 class OrderCreate(OrderBase):
     pass
@@ -21,6 +22,7 @@ class OrderUpdate(BaseModel):
     order_status: Optional[str] = None
     total_price: Optional[float] = None
     description: Optional[str] = None
+    delivery_type: Optional[str] = None
 
 class Order(OrderBase):
     id: int

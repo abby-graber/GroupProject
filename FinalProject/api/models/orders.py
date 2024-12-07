@@ -14,6 +14,7 @@ class Order(Base):
     order_status = Column(String(100))
     total_price = Column(DECIMAL(10, 2))
     description = Column(String(100))
+    delivery_type = Column(String(50), nullable=False)
 
     order_details = relationship("OrderDetail", back_populates="order")
     ratings_and_reviews = relationship("RatingAndReview", back_populates="order")

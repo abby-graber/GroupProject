@@ -126,3 +126,17 @@ def date_range(db: Session, start_date: datetime, end_date: datetime):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+def update_delivery_type(db: Session, order_id: int, delivery_type: str):
+    valid_delivery_types = ["takeout", "delivery"]
+    if delivery_type not in valid_delivery_types:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid delivery type provided!")
+
+    order = db.query(model.Order).filter(model.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found!")
+
+    order.delivery_type = delivery_type
+    db.commit()
+    db.refresh(order)
+    return order

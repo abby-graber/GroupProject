@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, FastAPI, status, Response, Query
+from fastapi import APIRouter, Depends, FastAPI, status, Response, Query, HTTPException
 from sqlalchemy.orm import Session
 from ..controllers import orders as controller
 from ..schemas import orders as schema
@@ -69,3 +69,22 @@ def update_status(
 def delete(item_id: int, db: Session = Depends(get_db)):
     return controller.delete(db=db, item_id=item_id)
 
+@router.get("/{order_id}/summary", response_model=schema.Order)
+def get_order_summary(order_id: int, db: Session = Depends(get_db)):
+    order = controller.read_one(db, order_id=order_id)
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
+
+@router.put("/{order_id}/delivery", response_model=schema.Order)
+def update_delivery_type(
+    order_id: int,
+    delivery_type: str = Query(..., description="Choose between 'takeout' or 'delivery'"),
+    db: Session = Depends(get_db)
+):
+    if delivery_type not in ["takeout", "delivery"]:
+        raise HTTPException(status_code=400, detail="Invalid delivery type")
+    order = controller.update_delivery_type(db=db, order_id=order_id, delivery_type=delivery_type)
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
