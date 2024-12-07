@@ -13,3 +13,4 @@ class Payment(Base):
     amount = Column(Float, nullable=False)
     date = Column(Date)
     customer = relationship("Customer", back_populates="payments")
+
