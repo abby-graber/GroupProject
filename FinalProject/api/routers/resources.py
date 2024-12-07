@@ -39,9 +39,3 @@ def read_one_item(resource_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
     return resources.read_all(db)
 
-@router.get("/search", response_model=List[recipe_schemas.Recipe], tags=["Recipes"])
-def search_recipes(food_type: str, db: Session = Depends(get_db)):
-    results = recipe_controller.search_by_food_type(food_type, db)
-    if not results:
-        raise HTTPException(status_code=404, detail=f"No recipes found for food type '{food_type}'.")
-    return results
