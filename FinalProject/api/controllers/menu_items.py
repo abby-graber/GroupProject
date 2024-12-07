@@ -8,7 +8,8 @@ def create(db: Session, item):
         ingredients=item.dish,
         price=item.price,
         calories=item.calories,
-        food_category=item.food_category
+        food_category=item.food_category,
+        food_type = item.food_type
     )
     db.add(db_menu)
     db.commit()
@@ -17,6 +18,8 @@ def create(db: Session, item):
 
 def read_all(db: Session):
     return db.query(model.MenuItem).all()
+
+
 
 def read_one(db: Session, item_id: int):
     return db.query(model.MenuItem).filter(model.MenuItem.id == item_id).first()

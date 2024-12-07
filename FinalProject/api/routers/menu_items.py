@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
-
+from typing import List, Optional
+from ..models import menu_items as model
 from ..controllers import menu_items
 from ..schemas import menu_items as menu
 from ..dependencies.database import engine, get_db
@@ -42,8 +42,19 @@ def delete_one_item(item_id: int, db: Session = Depends(get_db)):
 # @app.get
 
 @router.get("/", response_model=List[menu.MenuItem], tags=["Menu Items"])
-def read_items(db: Session = Depends(get_db)):
-    return menu_items.read_all(db)
+def read_items(food_type: Optional[str] = None, db: Session = Depends(get_db)):
+
+    query = db.query(model.MenuItem)
+
+    if food_type:
+        query = query.filter(model.MenuItem.food_type == food_type)
+
+    items = query.all()
+
+    if not items:
+        raise HTTPException(status_code=404, detail="No items found matching the filters.")
+
+    return items
 
 @router.get("/{item_id}", response_model=List[menu.MenuItem], tags=["Menu Items"])
 def read_one_item(item_id: int, db: Session = Depends(get_db)):
